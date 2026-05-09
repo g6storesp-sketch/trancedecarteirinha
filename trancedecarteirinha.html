@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>Trance de Carteirinha — Portal de Música Eletrônica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ══ TOKENS ══ */
+:root{
+  --v:#FF4800;--v2:#CC3A00;--v3:rgba(255,72,0,.08);--v4:rgba(255,72,0,.05);
+  --g:#FFFFFF;--g2:#AAAAAA;--g3:#F2F2F2;
+  --ink:#0D0D0D;--ink2:#1A1A1A;
+  --body:#3C3C3C;--muted:#717171;
+  --white:#FFFFFF;--off:#F8F8F6;
+  --line:rgba(13,13,13,0.09);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'DM Mono',monospace;background:var(--white);color:var(--ink);overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button,input,select{font-family:inherit}
+
+/* ══ PAGES ══ */
+.page{display:none}
+.page.active{display:block}
+
+/* ══ ANN BAR ══ */
+.ann{background:var(--v);color:#0D0D0D;text-align:center;padding:8px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ann em{opacity:.5;margin:0 14px;font-style:normal}
+
+/* ══ NAV DESKTOP ══ */
+.nav-d{display:none;grid-template-columns:auto 1fr auto;align-items:center;padding:0 56px;height:68px;background:var(--white);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:800}
+.nav-logo{display:flex;align-items:center;cursor:pointer}
+.logo-txt{font-family:'Anton',sans-serif;font-size:18px;text-transform:uppercase;letter-spacing:.02em;color:var(--ink);line-height:1}
+.logo-txt span{color:var(--v)}
+.logo-sub{font-size:8px;letter-spacing:.18em;color:var(--muted);display:block;margin-top:2px}
+.nav-links{display:flex;justify-content:center}
+.nav-link{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--body);padding:0 18px;height:68px;display:flex;align-items:center;position:relative;cursor:pointer;transition:color .18s;border:none;background:none}
+.nav-link:hover,.nav-link.on{color:var(--v)}
+.nav-link.on::after{content:'';position:absolute;bottom:0;left:18px;right:18px;height:2px;background:var(--v)}
+.nav-r{display:flex;align-items:center;gap:10px}
+.nav-btn-v{font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:10px 20px;border-radius:2px;border:none;background:var(--v);color:var(--ink);cursor:pointer;transition:background .18s}
+.nav-btn-v:hover{background:var(--ink)}
+.nav-btn-ol{font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:9px 18px;border-radius:2px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;transition:all .18s}
+.nav-btn-ol:hover{background:var(--ink);color:#0D0D0D}
+
+/* ══ NAV MOBILE ══ */
+.nav-m{display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:58px;background:var(--white);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:800}
+.nav-m .logo-txt{font-size:14px}
+.nav-ic{width:36px;height:36px;border:1px solid var(--line);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;background:none;flex-shrink:0}
+.nav-ic:hover{border-color:var(--v)}
+
+/* ══ MOBILE MENU DRAWER ══ */
+.menu-overlay{position:fixed;inset:0;z-index:900;background:rgba(13,13,13,0);pointer-events:none;transition:background .3s}
+.menu-overlay.open{background:rgba(13,13,13,.6);pointer-events:all}
+.menu-drawer{position:fixed;top:0;left:0;bottom:0;z-index:901;width:80vw;max-width:300px;background:var(--white);transform:translateX(-100%);transition:transform .35s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column}
+.menu-drawer.open{transform:translateX(0)}
+.md-hdr{display:flex;align-items:center;justify-content:space-between;padding:0 18px;height:56px;background:var(--ink);border-bottom:2px solid rgba(255,255,255,.2);flex-shrink:0}
+.md-title{font-family:'Anton',sans-serif;font-size:16px;text-transform:uppercase;letter-spacing:.04em;color:#0D0D0D}
+.md-title span{color:#FFFFFF}
+.md-close{width:30px;height:30px;border:1px solid rgba(255,255,255,.15);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;background:transparent;color:#0D0D0D}
+.md-item{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line);font-size:13px;font-weight:500;cursor:pointer;transition:background .15s}
+.md-item:hover,.md-item.on{background:var(--v4);color:var(--v)}
+.md-item-arrow{font-size:12px;color:var(--muted)}
+.md-cta{margin:16px;padding:14px;border-radius:2px;border:none;background:var(--v);color:var(--ink);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;text-align:center}
+
+/* ══ TICKER ══ */
+.ticker{background:var(--ink);border-top:1px solid var(--ink2);border-bottom:1px solid var(--ink2);overflow:hidden;padding:10px 0}
+.tick-in{display:flex;gap:0;white-space:nowrap;animation:tick 28s linear infinite}
+.tick-in span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#0D0D0D;padding:0 20px}
+.tick-in em{color:#FFFFFF;font-style:normal;padding:0 4px}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ══ HERO ══ */
+.hero{display:grid;grid-template-columns:1fr 1fr;min-height:520px;border-bottom:1px solid var(--line)}
+.hero-l{padding:72px 56px;display:flex;flex-direction:column;justify-content:center}
+.h-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--v);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.h-eyebrow::before{content:'';width:22px;height:1px;background:var(--v);display:block}
+.h-h1{font-family:'Anton',sans-serif;font-size:clamp(48px,5.5vw,76px);text-transform:uppercase;line-height:.9;letter-spacing:-.01em;color:var(--ink);margin-bottom:22px}
+.h-h1 .g{color:#FFFFFF}
+.h-h1 .out{-webkit-text-stroke:2px var(--ink);color:transparent}
+.h-h1 .vv{color:var(--v)}
+.h-sub{font-size:12px;color:var(--body);line-height:1.8;max-width:340px;margin-bottom:36px}
+.h-ctas{display:flex;gap:12px;margin-bottom:48px;flex-wrap:wrap}
+.btn-v{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:14px 28px;border-radius:2px;border:none;background:var(--v);color:var(--ink);cursor:pointer;transition:all .18s}
+.btn-v:hover{background:var(--ink)}
+.btn-ol{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:13px 24px;border-radius:2px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;transition:all .18s}
+.btn-ol:hover{background:var(--ink);color:#0D0D0D}
+.h-stats{display:flex;gap:32px}
+.hst .n{font-family:'Anton',sans-serif;font-size:28px;color:var(--ink);letter-spacing:-.01em}
+.hst .l{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.hero-r{background:var(--ink);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.hr-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:40px 40px}
+.hr-ghost{position:absolute;font-family:'Anton',sans-serif;font-size:120px;text-transform:uppercase;color:rgba(255,255,255,.04);letter-spacing:-.02em;pointer-events:none;line-height:1;white-space:nowrap}
+.hr-card{position:relative;z-index:2;width:240px;border:1px solid rgba(255,255,255,.08);border-radius:2px;background:rgba(255,255,255,.03);overflow:hidden}
+.hr-card-lbl{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.06)}
+.hr-card-ph{height:280px;display:flex;align-items:center;justify-content:center;font-size:10px;letter-spacing:.12em;color:rgba(255,255,255,.1);text-transform:uppercase}
+.hr-badge{position:absolute;top:24px;right:24px;z-index:3;background:var(--g);border-radius:2px;padding:8px 12px;text-align:center}
+.bv{font-family:'Anton',sans-serif;font-size:14px;text-transform:uppercase;color:var(--ink);letter-spacing:.02em;line-height:1}
+.bl{font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);opacity:.7}
+.hr-tag{position:absolute;bottom:24px;left:24px;z-index:3;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.1);padding:6px 12px;border-radius:2px}
+
+/* hero mobile */
+.hero-mob{padding:40px 20px 32px;background:var(--ink);position:relative;overflow:hidden;border-bottom:3px solid var(--v)}
+.hero-mob .h-eyebrow{color:#FFFFFF}
+.hero-mob .h-eyebrow::before{background:var(--g)}
+.hero-mob .h-h1{color:#0D0D0D;font-size:clamp(44px,12vw,64px)}
+.hero-mob .h-h1 .out{-webkit-text-stroke:2px rgba(255,255,255,.4);color:transparent}
+.hero-mob .h-sub{color:rgba(255,255,255,.5)}
+.hero-mob-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
+
+/* ══ SEC HEADER ══ */
+.sec-pre{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--v);margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.sec-pre::before{content:'';width:16px;height:1px;background:var(--v);display:block}
+.sec-h{font-family:'Anton',sans-serif;font-size:clamp(28px,3.5vw,40px);text-transform:uppercase;letter-spacing:-.01em;color:var(--ink);margin-bottom:0}
+.sec-h .v{color:var(--v)}
+.sec-h .g{color:#FFFFFF}
+
+/* ══ EVENTOS SECTION ══ */
+.ev-section{padding:64px 56px;border-bottom:1px solid var(--line)}
+.ev-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px}
+.see-all{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--v);background:none;border:1px solid rgba(255,72,0,.2);padding:8px 16px;border-radius:2px;cursor:pointer;transition:all .18s}
+.see-all:hover{background:var(--v);color:var(--ink);border-color:var(--v)}
+
+/* Filter pills */
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+.flbl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.fpill{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:7px 16px;border-radius:2px;border:1px solid var(--line);color:var(--muted);cursor:pointer;background:var(--white);transition:all .18s}
+.fpill:hover,.fpill.on{background:var(--ink);border-color:var(--ink);color:#0D0D0D}
+
+/* Event cards grid */
+.ev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.ecard{border-right:1px solid var(--line);border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s;display:flex;flex-direction:column}
+.ecard:nth-child(3n){border-right:none}
+.ecard:hover{background:var(--v4)}
+.ecard-img{aspect-ratio:16/9;background:var(--ink2);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.ecard-img-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:28px 28px}
+.ecard-img-txt{position:relative;z-index:1;font-family:'Anton',sans-serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.15)}
+.ecard-brand-bar{position:absolute;bottom:0;left:0;right:0;padding:8px 14px;background:linear-gradient(transparent,rgba(13,13,13,.8));display:flex;align-items:center;justify-content:space-between;z-index:2}
+.ecard-brand{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#FFFFFF}
+.ecard-genre{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.15);padding:2px 8px;border-radius:1px}
+.ecard-body{padding:18px;flex:1;display:flex;flex-direction:column}
+.ecard-name{font-family:'Anton',sans-serif;font-size:20px;text-transform:uppercase;letter-spacing:-.01em;color:var(--ink);margin-bottom:10px;line-height:.95}
+.ecard-meta{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.emeta-row{display:flex;align-items:center;gap:8px;font-size:10px;color:var(--muted);letter-spacing:.04em}
+.emeta-ic{width:14px;text-align:center;font-size:12px;color:var(--v);flex-shrink:0}
+.ecard-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:14px;border-top:1px solid var(--line)}
+.ecard-price{font-family:'Anton',sans-serif;font-size:22px;color:var(--ink);letter-spacing:-.01em}
+.ecard-price small{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);font-weight:400;letter-spacing:.06em}
+.ecard-cta{font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:9px 16px;border-radius:2px;border:none;background:var(--ink);color:#0D0D0D;cursor:pointer;transition:background .18s;white-space:nowrap}
+.ecard-cta:hover{background:var(--v)}
+
+/* ══ EDITORIAL DARK STRIP ══ */
+.editorial{background:var(--ink);display:grid;grid-template-columns:1fr 1fr;min-height:440px;border-top:3px solid var(--v)}
+.ed-l{padding:64px 56px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid rgba(255,255,255,.06)}
+.ed-ey{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#FFFFFF;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.ed-ey::before{content:'';width:22px;height:1px;background:var(--g);display:block}
+.ed-h{font-family:'Anton',sans-serif;font-size:clamp(44px,4.5vw,68px);text-transform:uppercase;line-height:.9;color:#0D0D0D;margin-bottom:22px;letter-spacing:-.01em}
+.ed-h .g{color:#FFFFFF}
+.ed-h .out-v{-webkit-text-stroke:2px rgba(255,255,255,.3);color:transparent}
+.ed-body{font-size:12px;color:rgba(255,255,255,.45);line-height:1.8;max-width:320px;margin-bottom:36px}
+.btn-g{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:14px 28px;border-radius:2px;border:none;background:var(--v);color:#0D0D0D;cursor:pointer;align-self:flex-start;transition:background .18s}
+.btn-g:hover{background:var(--white)}
+.ed-r{background:var(--ink2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.ed-r-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px}
+.ed-brands{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:32px}
+.ed-brand-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:2px;padding:20px 16px;text-align:center;cursor:pointer;transition:border-color .18s}
+.ed-brand-card:hover{border-color:#FFFFFF}
+.ed-brand-letter{font-family:'Anton',sans-serif;font-size:36px;text-transform:uppercase;color:rgba(255,255,255,.15);line-height:1;margin-bottom:8px}
+.ed-brand-name{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.4)}
+.ed-brand-count{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-top:4px}
+
+/* ══ BLOG / EDITORIAL SECTION ══ */
+.blog-section{padding:64px 56px;border-bottom:1px solid var(--line)}
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:40px}
+.bcard{cursor:pointer;display:flex;flex-direction:column}
+.bcard:hover .bc-img-inner{transform:scale(1.04)}
+.bc-img{aspect-ratio:16/9;overflow:hidden;border-radius:2px;margin-bottom:16px;background:var(--off);position:relative}
+.bc-img-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;transition:transform .35s cubic-bezier(.16,1,.3,1);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.bc-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--v);transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.16,1,.3,1)}
+.bcard:hover .bc-img::after{transform:scaleX(1)}
+.bc-tag{display:inline-flex;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:1px;margin-bottom:10px;align-self:flex-start}
+.bc-tag.cultura{background:var(--v3);color:var(--v2)}
+.bc-tag.evento{background:rgba(255,72,0,.08);color:var(--v)}
+.bc-tag.musica{background:var(--ink);color:#FFFFFF}
+.bc-tag.entrevista{background:var(--g3);color:#888888}
+.bc-title{font-family:'Anton',sans-serif;font-size:20px;text-transform:uppercase;letter-spacing:-.01em;line-height:.95;color:var(--ink);margin-bottom:10px}
+.bc-excerpt{font-size:12px;color:var(--body);line-height:1.7;margin-bottom:14px;flex:1}
+.bc-meta{display:flex;align-items:center;gap:12px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:auto}
+.bc-dot{width:3px;height:3px;background:var(--line);border-radius:50%;flex-shrink:0}
+
+/* ══ NEWSLETTER ══ */
+.newsletter{background:var(--ink);border-top:3px solid var(--v);padding:64px 56px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.nl-h{font-family:'Anton',sans-serif;font-size:clamp(32px,3.5vw,48px);text-transform:uppercase;letter-spacing:-.01em;line-height:.95;color:#0D0D0D}
+.nl-h .g{color:#FFFFFF}
+.nl-sub{font-size:12px;color:rgba(255,255,255,.4);line-height:1.8;margin-top:14px}
+.nl-form{display:flex;flex-direction:column;gap:12px}
+.nl-input{padding:14px 18px;border:1px solid rgba(255,255,255,.15);border-radius:2px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.04em;color:#0D0D0D;background:rgba(255,255,255,.06);outline:none}
+.nl-input:focus{border-color:#FFFFFF}
+.nl-input::placeholder{color:rgba(255,255,255,.25)}
+.nl-btn{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;padding:15px;border-radius:2px;border:none;background:var(--v);color:#0D0D0D;cursor:pointer;transition:background .18s}
+.nl-btn:hover{background:var(--white)}
+.nl-note{font-size:10px;color:rgba(255,255,255,.2);letter-spacing:.06em}
+
+/* ══ FOOTER ══ */
+.footer{background:var(--ink);border-top:3px solid var(--v)}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;padding:56px;border-bottom:1px solid rgba(255,255,255,.07)}
+.ft-brand p{font-size:12px;color:rgba(255,255,255,.4);line-height:1.8;max-width:240px;margin-bottom:20px}
+.ft-social{display:flex;gap:8px}
+.ft-soc{width:34px;height:34px;border:1px solid rgba(255,255,255,.12);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;cursor:pointer;transition:all .18s;color:rgba(255,255,255,.4);letter-spacing:.04em}
+.ft-soc:hover{border-color:#FFFFFF;color:#FFFFFF}
+.ft-col-title{font-family:'Anton',sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:#0D0D0D;margin-bottom:16px}
+.ft-col a{display:block;font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.05em;padding:5px 0;cursor:pointer;transition:color .15s}
+.ft-col a:hover{color:#FFFFFF}
+.footer-bot{display:flex;align-items:center;justify-content:space-between;padding:20px 56px;font-size:10px;color:rgba(255,255,255,.25);letter-spacing:.08em}
+.footer-bot span{color:rgba(255,255,255,.4)}
+
+/* ══ PAGE: EVENTO DETALHE ══ */
+.ev-detail{display:grid;grid-template-columns:55% 45%;min-height:calc(100vh - 108px);border-top:3px solid var(--v)}
+.evd-left{background:var(--ink2);padding:56px;position:relative;overflow:hidden;border-right:1px solid var(--line)}
+.evd-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px}
+.evd-ghost{position:absolute;font-family:'Anton',sans-serif;font-size:160px;text-transform:uppercase;color:rgba(255,255,255,.03);letter-spacing:-.02em;line-height:.8;pointer-events:none;bottom:20px;left:-10px}
+.evd-inner{position:relative;z-index:2}
+.evd-brand{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#FFFFFF;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.evd-brand::before{content:'';width:16px;height:1px;background:var(--g)}
+.evd-title{font-family:'Anton',sans-serif;font-size:clamp(40px,5vw,64px);text-transform:uppercase;line-height:.9;letter-spacing:-.01em;color:#0D0D0D;margin-bottom:24px}
+.evd-title .g{color:#FFFFFF}
+.evd-line{width:56px;height:3px;background:var(--v);margin-bottom:28px}
+.evd-metas{display:flex;flex-direction:column;gap:12px;margin-bottom:36px}
+.evd-meta{display:flex;align-items:center;gap:12px;font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.04em}
+.evd-meta-ic{font-size:16px;color:#FFFFFF;width:20px;text-align:center;flex-shrink:0}
+.evd-desc{font-size:12px;color:rgba(255,255,255,.4);line-height:1.8;max-width:400px;margin-bottom:40px}
+.lineup-section{margin-top:0}
+.lineup-pre{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#FFFFFF;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.lineup-pre::before{content:'';width:12px;height:1px;background:var(--g)}
+.artist-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.artist-row:last-child{border:none}
+.artist-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;letter-spacing:.04em;flex-shrink:0;font-family:'DM Mono',monospace}
+.artist-info{flex:1}
+.artist-name{font-size:13px;font-weight:500;color:#0D0D0D;margin-bottom:2px;letter-spacing:.02em}
+.artist-role{font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.08em;text-transform:uppercase}
+.artist-time{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:.04em;font-family:'DM Mono',monospace}
+.evd-right{padding:56px;background:var(--white)}
+.ticket-hd{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.ticket-hd::before{content:'';width:12px;height:1px;background:var(--v)}
+.ticket-card{border:1px solid var(--line);border-radius:2px;overflow:hidden;margin-bottom:12px}
+.ticket-card-hd{background:var(--v4);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,72,0,.15)}
+.ticket-card-name{font-size:12px;font-weight:500;color:var(--ink);letter-spacing:.02em}
+.ticket-card-badge{font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:1px}
+.badge-avail{background:var(--g3);color:#888888}
+.badge-limited{background:#FFF3CD;color:#7A5000}
+.badge-sold{background:rgba(200,0,0,.08);color:#B82020;text-decoration:line-through}
+.ticket-card-body{padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+.ticket-desc{font-size:11px;color:var(--muted);letter-spacing:.03em}
+.ticket-price-big{font-family:'Anton',sans-serif;font-size:32px;color:var(--ink);letter-spacing:-.01em}
+.ticket-price-big small{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);font-weight:400}
+.ticket-cta{display:block;width:100%;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;padding:16px;border-radius:2px;border:none;background:var(--v);color:var(--ink);cursor:pointer;margin-top:8px;margin-bottom:4px;transition:background .18s}
+.ticket-cta:hover{background:var(--ink)}
+.ticket-note{text-align:center;font-size:10px;color:var(--muted);letter-spacing:.06em;margin-bottom:20px}
+.ticket-perks{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-top:2px solid var(--v);border-radius:2px;overflow:hidden;margin-bottom:28px}
+.tperk{padding:12px;text-align:center;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.tperk:nth-child(2n){border-right:none}
+.tperk:nth-child(3),.tperk:nth-child(4){border-bottom:none}
+.tperk-ic{font-size:16px;margin-bottom:4px}
+.tperk-txt{font-size:9px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;line-height:1.5}
+.back-btn{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--v);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:0;margin-bottom:20px}
+
+/* ══ PAGE: AGENDA (full) ══ */
+.agenda-page{padding:56px}
+.agenda-hd{margin-bottom:40px}
+
+/* ══ PAGE: ARTISTAS ══ */
+.artists-page{padding:64px 56px}
+.artists-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:3px;overflow:hidden;margin-top:40px}
+.acard{padding:24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s}
+.acard:nth-child(4n){border-right:none}
+.acard:hover{background:var(--v4)}
+.acard-av{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:22px;text-transform:uppercase;margin-bottom:14px}
+.acard-name{font-family:'Anton',sans-serif;font-size:16px;text-transform:uppercase;letter-spacing:-.01em;color:var(--ink);margin-bottom:4px}
+.acard-genre{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.acard-events{font-size:10px;color:var(--v);letter-spacing:.06em;margin-top:10px;font-weight:500}
+
+/* ══ PAGE: FESTIVAIS ══ */
+.festivais-page{padding:64px 56px}
+.fest-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border:1px solid var(--line);border-radius:3px;overflow:hidden;margin-top:40px}
+.fcard{display:grid;grid-template-columns:180px 1fr;min-height:200px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s}
+.fcard:nth-child(2n){border-right:none}
+.fcard:hover{background:var(--v4)}
+.fcard-img{background:var(--ink2);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.fcard-img-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:24px 24px}
+.fcard-letter{position:relative;z-index:1;font-family:'Anton',sans-serif;font-size:64px;text-transform:uppercase;color:rgba(255,255,255,.1);line-height:1}
+.fcard-body{padding:24px}
+.fcard-name{font-family:'Anton',sans-serif;font-size:22px;text-transform:uppercase;letter-spacing:-.01em;color:var(--ink);margin-bottom:6px;line-height:.95}
+.fcard-genre{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--v);margin-bottom:12px;font-weight:500}
+.fcard-desc{font-size:11px;color:var(--body);line-height:1.7;margin-bottom:16px}
+.fcard-stats{display:flex;gap:20px}
+.fstat .n{font-family:'Anton',sans-serif;font-size:20px;color:var(--ink);letter-spacing:-.01em}
+.fstat .l{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+
+/* ══ MOBILE SPECIFIC ══ */
+.m-ev-grid{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.m-ev-grid .ecard{border-right:none}
+.m-ev-grid .ecard-img{aspect-ratio:2/1}
+.m-blog-grid{display:flex;flex-direction:column;gap:24px}
+.m-editorial{background:var(--ink);padding:40px 20px;border-top:3px solid var(--v)}
+.m-ed-brands{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}
+.m-newsletter{background:var(--ink);border-top:3px solid var(--v);padding:40px 20px}
+.m-footer{background:var(--ink);border-top:3px solid var(--v);padding:32px 20px}
+.m-ft-links{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid rgba(255,255,255,.08);border-radius:2px;overflow:hidden;margin:20px 0}
+.m-ft-link{padding:14px;border-right:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.04em;cursor:pointer}
+.m-ft-link:nth-child(2n){border-right:none}
+.m-ft-bot{font-size:10px;color:rgba(255,255,255,.2);letter-spacing:.06em;text-align:center;padding-top:16px;border-top:1px solid rgba(255,255,255,.07)}
+.m-ev-detail{padding:20px}
+.m-section{padding:32px 20px;border-bottom:1px solid var(--line)}
+.m-artists-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.m-artists-grid .acard{border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.m-artists-grid .acard:nth-child(2n){border-right:none}
+.m-fest-grid{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.m-fest-grid .fcard{grid-template-columns:100px 1fr;min-height:120px}
+
+/* ══ RESPONSIVE SHOW/HIDE ══ */
+.d-only{display:none}
+.m-only{display:block}
+@media(min-width:768px){
+  .d-only{display:block}
+  .m-only{display:none}
+  .d-flex-only{display:flex}
+  .nav-d{display:grid}
+  .nav-m{display:none}
+}
+@media(max-width:767px){
+  .ev-grid{grid-template-columns:1fr}
+  .ev-grid .ecard{border-right:none}
+}
+
+/* ══ TOAST ══ */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#0D0D0D;padding:12px 24px;border-radius:2px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;border-left:3px solid var(--v);opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ <span id="toast-msg">ok</span></div>
+
+<!-- MENU MOBILE DRAWER -->
+<div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
+<div class="menu-drawer" id="menu-drawer">
+  <div class="md-hdr">
+    <div class="md-title">Menu <span>//</span></div>
+    <button class="md-close" onclick="closeMenu()">✕</button>
+  </div>
+  <div class="md-item on" onclick="closeMenu();goPage('home')"><span>Home</span><span class="md-item-arrow">→</span></div>
+  <div class="md-item" onclick="closeMenu();goPage('agenda')"><span>Agenda</span><span class="md-item-arrow">→</span></div>
+  <div class="md-item" onclick="closeMenu();goPage('artistas')"><span>Artistas</span><span class="md-item-arrow">→</span></div>
+  <div class="md-item" onclick="closeMenu();goPage('festivais')"><span>Festivais</span><span class="md-item-arrow">→</span></div>
+  <div class="md-item" onclick="closeMenu();goPage('blog')"><span>Editorial</span><span class="md-item-arrow">→</span></div>
+  <button class="md-cta" onclick="closeMenu();showToast('Newsletter em breve!')">Newsletter Gratuita →</button>
+</div>
+
+<!-- ANN BAR -->
+<div class="ann">Portal de música eletrônica do Brasil <em>///</em> Festivais, artistas e ingressos <em>///</em> 100% underground</div>
+
+<!-- NAV DESKTOP -->
+<nav class="nav-d d-only">
+  <div style="display:flex;align-items:center;gap:0">
+    <div class="nav-logo" onclick="goPage('home')" style="margin-right:32px">
+      <div>
+        <div class="logo-txt">Trance<span>.</span>dc</div>
+        <small class="logo-sub">de carteirinha</small>
+      </div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link on" id="nl-home" onclick="goPage('home')">Home</button>
+    <button class="nav-link" id="nl-agenda" onclick="goPage('agenda')">Agenda</button>
+    <button class="nav-link" id="nl-artistas" onclick="goPage('artistas')">Artistas</button>
+    <button class="nav-link" id="nl-festivais" onclick="goPage('festivais')">Festivais</button>
+    <button class="nav-link" id="nl-blog" onclick="goPage('blog')">Editorial</button>
+  </div>
+  <div class="nav-r">
+    <button class="nav-btn-ol" onclick="showToast('Newsletter em breve!')">Newsletter</button>
+    <button class="nav-btn-v" onclick="goPage('agenda')">Ver Eventos →</button>
+  </div>
+</nav>
+
+<!-- NAV MOBILE -->
+<nav class="nav-m m-only">
+  <div class="nav-logo" onclick="goPage('home')">
+    <div class="logo-txt">Trance<span style="color:var(--v)">.</span>dc</div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button class="nav-ic" onclick="goPage('agenda')" title="Agenda">📅</button>
+    <button class="nav-ic" onclick="openMenu()">☰</button>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════
+     PAGE: HOME
+════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- HERO DESKTOP -->
+  <section class="hero d-only">
+    <div class="hero-l">
+      <div class="h-eyebrow">Portal Oficial — Cena Eletrônica BR</div>
+      <h1 class="h-h1">
+        Trance<br>
+        <span class="out">de</span><br>
+        <span class="vv">Carteirinha</span>
+      </h1>
+      <p class="h-sub">O portal da cena underground brasileira. Festivais, artistas, line-ups e ingressos — tudo em um lugar só.</p>
+      <div class="h-ctas">
+        <button class="btn-v" onclick="goPage('agenda')">Ver Agenda →</button>
+        <button class="btn-ol" onclick="goPage('festivais')">Nossos Festivais</button>
+      </div>
+      <div class="h-stats">
+        <div class="hst"><div class="n">12+</div><div class="l">Festivais</div></div>
+        <div class="hst"><div class="n">48</div><div class="l">Eventos / ano</div></div>
+        <div class="hst"><div class="n">100%</div><div class="l">Underground BR</div></div>
+      </div>
+    </div>
+    <div class="hero-r">
+      <div class="hr-grid"></div>
+      <div class="hr-ghost">TRANCE</div>
+      <div class="hr-card">
+        <div class="hr-card-lbl">Próximo destaque — Jun 2025</div>
+        <div class="hr-card-ph">Arte do evento</div>
+      </div>
+      <div class="hr-badge"><div class="bv">JUN</div><div class="bl">Próximo</div></div>
+      <div class="hr-tag">Trance · Techno · Psy</div>
+    </div>
+  </section>
+
+  <!-- HERO MOBILE -->
+  <div class="hero-mob m-only">
+    <div class="hero-mob-grid"></div>
+    <div class="h-eyebrow" style="color:#FFFFFF"><span style="display:block;width:22px;height:1px;background:var(--g)"></span>Portal Eletrônico BR</div>
+    <h1 class="h-h1" style="color:#0D0D0D;font-size:clamp(44px,12vw,64px);margin-top:10px">
+      Trance<br>
+      <span style="-webkit-text-stroke:2px rgba(255,255,255,.4);color:transparent">de</span><br>
+      <span style="color:#FFFFFF">Carteirinha</span>
+    </h1>
+    <p class="h-sub" style="color:rgba(255,255,255,.5);margin-top:16px;margin-bottom:28px">O portal da cena underground brasileira.</p>
+    <div class="h-ctas">
+      <button class="btn-v" onclick="goPage('agenda')">Ver Agenda →</button>
+      <button class="btn-ol" style="color:rgba(255,255,255,.6);border-color:rgba(255,255,255,.2)" onclick="goPage('festivais')">Festivais</button>
+    </div>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="tick-in">
+      <span>Trance de Carteirinha</span><em>///</em><span>Underground Brasil</span><em>///</em>
+      <span>Trance · Techno · Psy</span><em>///</em><span>Portal Eletrônico</span><em>///</em>
+      <span>Festivais · Artistas</span><em>///</em><span>100% Brasil</span><em>///</em>
+      <span>Trance de Carteirinha</span><em>///</em><span>Underground Brasil</span><em>///</em>
+      <span>Trance · Techno · Psy</span><em>///</em><span>Portal Eletrônico</span><em>///</em>
+      <span>Festivais · Artistas</span><em>///</em><span>100% Brasil</span><em>///</em>
+    </div>
+  </div>
+
+  <!-- PRÓXIMOS EVENTOS - DESKTOP -->
+  <section class="ev-section d-only">
+    <div class="ev-header">
+      <div>
+        <div class="sec-pre">Agenda 2025</div>
+        <h2 class="sec-h">Próximos <span class="v">Eventos</span></h2>
+      </div>
+      <button class="see-all" onclick="goPage('agenda')">Ver agenda completa →</button>
+    </div>
+    <div class="filter-bar">
+      <span class="flbl">Filtrar:</span>
+      <button class="fpill on" onclick="setPill(this)">Todos</button>
+      <button class="fpill" onclick="setPill(this)">Trance</button>
+      <button class="fpill" onclick="setPill(this)">Techno</button>
+      <button class="fpill" onclick="setPill(this)">Psytrance</button>
+      <button class="fpill" onclick="setPill(this)">São Paulo</button>
+      <button class="fpill" onclick="setPill(this)">Rio de Janeiro</button>
+    </div>
+    <div class="ev-grid" id="ev-grid-home"></div>
+  </section>
+
+  <!-- PRÓXIMOS EVENTOS - MOBILE -->
+  <div class="m-only m-section">
+    <div class="sec-pre">Agenda 2025</div>
+    <h2 class="sec-h" style="margin-bottom:20px">Próximos <span class="v">Eventos</span></h2>
+    <div class="m-ev-grid" id="ev-grid-home-m"></div>
+    <button class="btn-v" style="width:100%;margin-top:16px;text-align:center" onclick="goPage('agenda')">Ver agenda completa →</button>
+  </div>
+
+  <!-- EDITORIAL DARK — FESTIVAIS -->
+  <div class="editorial d-only">
+    <div class="ed-l">
+      <div class="ed-ey">Nossos Festivais</div>
+      <h2 class="ed-h">A cena<br><span style="color:var(--v)">unificada</span><br><span class="out-v">No Brasil</span></h2>
+      <p class="ed-body">As maiores marcas do underground brasileiro reunidas em um só portal. Encontre seus festivais favoritos, siga artistas e compre ingressos.</p>
+      <button class="btn-g" onclick="goPage('festivais')">Ver todos os festivais →</button>
+    </div>
+    <div class="ed-r">
+      <div class="ed-r-grid"></div>
+      <div class="ed-brands">
+        <div class="ed-brand-card" onclick="goPage('festivais')">
+          <div class="ed-brand-letter">A</div>
+          <div class="ed-brand-name">Festival Alpha</div>
+          <div class="ed-brand-count">4 eventos</div>
+        </div>
+        <div class="ed-brand-card" onclick="goPage('festivais')">
+          <div class="ed-brand-letter" style="color:rgba(255,255,255,.15)">B</div>
+          <div class="ed-brand-name">Beta Sounds</div>
+          <div class="ed-brand-count">3 eventos</div>
+        </div>
+        <div class="ed-brand-card" onclick="goPage('festivais')">
+          <div class="ed-brand-letter" style="color:rgba(255,72,0,.4)">C</div>
+          <div class="ed-brand-name">Club Cosmos</div>
+          <div class="ed-brand-count">6 eventos</div>
+        </div>
+        <div class="ed-brand-card" onclick="goPage('festivais')">
+          <div class="ed-brand-letter" style="color:rgba(255,255,255,.1)">D</div>
+          <div class="ed-brand-name">Deep Roots</div>
+          <div class="ed-brand-count">2 eventos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDITORIAL MOBILE -->
+  <div class="m-editorial m-only">
+    <div class="ed-r-grid" style="position:absolute;pointer-events:none"></div>
+    <div class="ed-ey">Nossos Festivais</div>
+    <h2 class="ed-h" style="font-size:clamp(40px,10vw,56px)">A cena<br><span style="color:var(--v)">unificada</span><br><span class="out-v">No Brasil</span></h2>
+    <p class="ed-body" style="margin-bottom:24px">As maiores marcas do underground brasileiro em um só portal.</p>
+    <button class="btn-g" onclick="goPage('festivais')">Ver festivais →</button>
+    <div class="m-ed-brands">
+      <div class="ed-brand-card" onclick="goPage('festivais')"><div class="ed-brand-letter">A</div><div class="ed-brand-name">Festival Alpha</div></div>
+      <div class="ed-brand-card" onclick="goPage('festivais')"><div class="ed-brand-letter" style="color:rgba(255,255,255,.15)">B</div><div class="ed-brand-name">Beta Sounds</div></div>
+      <div class="ed-brand-card" onclick="goPage('festivais')"><div class="ed-brand-letter" style="color:rgba(255,72,0,.4)">C</div><div class="ed-brand-name">Club Cosmos</div></div>
+      <div class="ed-brand-card" onclick="goPage('festivais')"><div class="ed-brand-letter" style="color:rgba(255,255,255,.1)">D</div><div class="ed-brand-name">Deep Roots</div></div>
+    </div>
+  </div>
+
+  <!-- EDITORIAL / BLOG POSTS -->
+  <section class="blog-section d-only">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between">
+      <div>
+        <div class="sec-pre">Editorial</div>
+        <h2 class="sec-h">Da <span class="v">Cena</span></h2>
+      </div>
+      <button class="see-all" onclick="goPage('blog')">Ver tudo →</button>
+    </div>
+    <div class="blog-grid" id="blog-home"></div>
+  </section>
+
+  <!-- BLOG MOBILE -->
+  <div class="m-only m-section">
+    <div class="sec-pre">Editorial</div>
+    <h2 class="sec-h" style="margin-bottom:20px">Da <span class="v">Cena</span></h2>
+    <div class="m-blog-grid" id="blog-home-m"></div>
+    <button class="btn-ol" style="width:100%;margin-top:16px;text-align:center" onclick="goPage('blog')">Ver tudo →</button>
+  </div>
+
+  <!-- NEWSLETTER DESKTOP -->
+  <div class="newsletter d-only">
+    <div>
+      <h2 class="nl-h">Fique por<br>dentro da <span style="color:var(--v)">cena</span></h2>
+      <p class="nl-sub">Line-ups, ingressos antecipados e novidades direto no seu email. Sem spam, só underground.</p>
+    </div>
+    <div class="nl-form">
+      <input class="nl-input" type="text" placeholder="Seu nome">
+      <input class="nl-input" type="email" placeholder="Seu melhor email">
+      <button class="nl-btn" onclick="showToast('Inscrição realizada! ✓')">Quero Receber →</button>
+      <div class="nl-note">Sem spam. Cancele quando quiser.</div>
+    </div>
+  </div>
+
+  <!-- NEWSLETTER MOBILE -->
+  <div class="m-newsletter m-only">
+    <div class="ed-ey">Newsletter</div>
+    <h2 class="nl-h" style="font-size:clamp(32px,8vw,44px);margin-bottom:14px">Fique por dentro da <span style="color:var(--v)">cena</span></h2>
+    <div class="nl-form">
+      <input class="nl-input" type="email" placeholder="Seu email">
+      <button class="nl-btn" onclick="showToast('Inscrição realizada! ✓')">Quero Receber →</button>
+    </div>
+  </div>
+
+  <!-- FOOTER DESKTOP -->
+  <footer class="footer d-only">
+    <div class="footer-top">
+      <div class="ft-brand">
+        <div style="margin-bottom:16px"><div class="logo-txt" style="font-size:20px">Trance<span style="color:var(--v)">.</span>dc</div><div class="logo-sub" style="font-size:9px;letter-spacing:.16em;color:rgba(255,255,255,.3)">de carteirinha</div></div>
+        <p>O portal da cena underground brasileira. Festivais, artistas, ingressos — tudo em um lugar.</p>
+        <div class="ft-social">
+          <div class="ft-soc">ig</div>
+          <div class="ft-soc">tt</div>
+          <div class="ft-soc">yt</div>
+          <div class="ft-soc">sp</div>
+        </div>
+      </div>
+      <div class="ft-col">
+        <div class="ft-col-title">Portal</div>
+        <a onclick="goPage('agenda')">Agenda</a>
+        <a onclick="goPage('artistas')">Artistas</a>
+        <a onclick="goPage('festivais')">Festivais</a>
+        <a onclick="goPage('blog')">Editorial</a>
+      </div>
+      <div class="ft-col">
+        <div class="ft-col-title">Festivais</div>
+        <a onclick="goPage('festivais')">Festival Alpha</a>
+        <a onclick="goPage('festivais')">Beta Sounds</a>
+        <a onclick="goPage('festivais')">Club Cosmos</a>
+        <a onclick="goPage('festivais')">Deep Roots</a>
+        <a onclick="goPage('festivais')">Ver todos</a>
+      </div>
+      <div class="ft-col">
+        <div class="ft-col-title">Info</div>
+        <a onclick="showToast('Em breve!')">Para Produtores</a>
+        <a onclick="showToast('Em breve!')">Anuncie</a>
+        <a onclick="showToast('Em breve!')">Contato</a>
+        <a onclick="showToast('Em breve!')">Imprensa</a>
+      </div>
+    </div>
+    <div class="footer-bot">
+      <span>© 2025 Trance de Carteirinha — Todos os direitos reservados</span>
+      <span style="color:rgba(255,255,255,.2)">Feito com <span>♥</span> no Brasil</span>
+    </div>
+  </footer>
+
+  <!-- FOOTER MOBILE -->
+  <div class="m-footer m-only">
+    <div style="margin-bottom:16px"><div class="logo-txt" style="font-size:18px;color:#0D0D0D">Trance<span style="color:var(--v)">.</span>dc</div></div>
+    <p style="font-size:11px;color:rgba(255,255,255,.4);line-height:1.8;margin-bottom:16px">O portal da cena underground brasileira.</p>
+    <div class="ft-social" style="margin-bottom:0">
+      <div class="ft-soc">ig</div><div class="ft-soc">tt</div><div class="ft-soc">yt</div>
+    </div>
+    <div class="m-ft-links">
+      <div class="m-ft-link" onclick="goPage('agenda')">Agenda</div>
+      <div class="m-ft-link" onclick="goPage('artistas')">Artistas</div>
+      <div class="m-ft-link" onclick="goPage('festivais')">Festivais</div>
+      <div class="m-ft-link" onclick="goPage('blog')">Editorial</div>
+      <div class="m-ft-link" onclick="showToast('Em breve!')">Para Produtores</div>
+      <div class="m-ft-link" onclick="showToast('Em breve!')">Contato</div>
+    </div>
+    <div class="m-ft-bot">© 2025 Trance de Carteirinha</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     PAGE: AGENDA
+════════════════════════════════ -->
+<div class="page" id="page-agenda">
+  <div class="agenda-page">
+    <div class="agenda-hd">
+      <div class="sec-pre">Todos os eventos</div>
+      <h2 class="sec-h" style="margin-bottom:0">Agenda <span class="v">2025</span></h2>
+    </div>
+    <div class="filter-bar">
+      <span class="flbl d-only">Filtrar:</span>
+      <button class="fpill on" onclick="setPill(this)">Todos</button>
+      <button class="fpill" onclick="setPill(this)">Trance</button>
+      <button class="fpill" onclick="setPill(this)">Techno</button>
+      <button class="fpill" onclick="setPill(this)">Psytrance</button>
+      <button class="fpill" onclick="setPill(this)">São Paulo</button>
+      <button class="fpill" onclick="setPill(this)">Rio</button>
+      <button class="fpill" onclick="setPill(this)">Campinas</button>
+    </div>
+    <div class="ev-grid" id="ev-grid-agenda"></div>
+  </div>
+  <div class="footer d-only" style="border-top:1px solid var(--line)">
+    <div class="footer-bot" style="justify-content:center"><span style="color:rgba(255,255,255,.3)">© 2025 Trance de Carteirinha</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     PAGE: EVENTO DETALHE
+════════════════════════════════ -->
+<div class="page" id="page-evento">
+  <!-- DESKTOP -->
+  <div class="d-only">
+    <div class="ev-detail">
+      <div class="evd-left">
+        <div class="evd-grid"></div>
+        <div class="evd-ghost" id="evd-ghost">TRANCE</div>
+        <div class="evd-inner">
+          <button class="back-btn" onclick="goPage('agenda')" style="color:rgba(255,255,255,.4);border:none;background:none;cursor:pointer">← Voltar para agenda</button>
+          <div class="evd-brand" id="evd-brand">Festival Alpha</div>
+          <h1 class="evd-title" id="evd-title">Festival de<br><span style="color:var(--v)">Verão 2025</span></h1>
+          <div class="evd-line"></div>
+          <div class="evd-metas">
+            <div class="evd-meta"><span class="evd-meta-ic">📅</span><span id="evd-date">Sábado, 14 de junho de 2025</span></div>
+            <div class="evd-meta"><span class="evd-meta-ic">🕙</span><span id="evd-time">22h00 – 08h00</span></div>
+            <div class="evd-meta"><span class="evd-meta-ic">📍</span><span id="evd-local">Arena XYZ — São Paulo, SP</span></div>
+          </div>
+          <p class="evd-desc" id="evd-desc">Uma noite inteira de trance progressivo com os melhores artistas da cena nacional e internacional. Três palcos, área de descanso e experiência imersiva.</p>
+          <div class="lineup-section">
+            <div class="lineup-pre">Line-up</div>
+            <div id="evd-lineup"></div>
+          </div>
+        </div>
+      </div>
+      <div class="evd-right">
+        <div class="ticket-hd">Ingressos disponíveis</div>
+        <div id="evd-tickets"></div>
+        <button class="ticket-cta" onclick="showToast('Abrindo Sympla...')">🎟 Comprar no Sympla →</button>
+        <div class="ticket-note">Você será redirecionado para o Sympla</div>
+        <div class="ticket-perks">
+          <div class="tperk"><div class="tperk-ic">🔒</div><div class="tperk-txt">Pagamento Seguro</div></div>
+          <div class="tperk"><div class="tperk-ic">✉</div><div class="tperk-txt">Ingresso por Email</div></div>
+          <div class="tperk"><div class="tperk-ic">↩</div><div class="tperk-txt">Política de Troca</div></div>
+          <div class="tperk"><div class="tperk-ic">📱</div><div class="tperk-txt">QR Code na Entrada</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- MOBILE -->
+  <div class="m-only m-ev-detail">
+    <button class="back-btn" onclick="goPage('agenda')" style="margin-bottom:16px">← Voltar</button>
+    <div style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--v);margin-bottom:8px;display:flex;align-items:center;gap:8px"><span style="display:block;width:12px;height:1px;background:var(--v)"></span><span id="m-evd-brand">Festival Alpha</span></div>
+    <h1 style="font-family:'Anton',sans-serif;font-size:clamp(32px,9vw,48px);text-transform:uppercase;letter-spacing:-.01em;line-height:.9;color:var(--ink);margin-bottom:16px" id="m-evd-title">Festival de <span style="color:var(--v)">Verão 2025</span></h1>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;padding:16px;background:var(--v4);border-radius:2px;border-left:3px solid var(--v)" id="m-evd-metas"></div>
+    <p style="font-size:12px;color:var(--body);line-height:1.8;margin-bottom:24px" id="m-evd-desc"></p>
+    <div style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px"><span style="display:block;width:12px;height:1px;background:var(--v)"></span>Line-up</div>
+    <div id="m-evd-lineup" style="margin-bottom:24px"></div>
+    <div style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px"><span style="display:block;width:12px;height:1px;background:var(--v)"></span>Ingressos</div>
+    <div id="m-evd-tickets"></div>
+    <button class="ticket-cta" onclick="showToast('Abrindo Sympla...')">🎟 Comprar no Sympla →</button>
+    <div class="ticket-note" style="margin-bottom:0">Você será redirecionado para o Sympla</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     PAGE: ARTISTAS
+════════════════════════════════ -->
+<div class="page" id="page-artistas">
+  <div class="artists-page">
+    <div class="agenda-hd">
+      <div class="sec-pre">Quem toca</div>
+      <h2 class="sec-h">Artistas <span class="v">da Cena</span></h2>
+    </div>
+    <div class="filter-bar">
+      <button class="fpill on" onclick="setPill(this)">Todos</button>
+      <button class="fpill" onclick="setPill(this)">Trance</button>
+      <button class="fpill" onclick="setPill(this)">Techno</button>
+      <button class="fpill" onclick="setPill(this)">Psy</button>
+      <button class="fpill" onclick="setPill(this)">B2B</button>
+    </div>
+    <div class="artists-grid d-only" id="artists-grid-d"></div>
+    <div class="m-artists-grid m-only" id="artists-grid-m"></div>
+  </div>
+  <div class="footer d-only"><div class="footer-bot" style="justify-content:center"><span style="color:rgba(255,255,255,.3)">© 2025 Trance de Carteirinha</span></div></div>
+</div>
+
+<!-- ════════════════════════════════
+     PAGE: FESTIVAIS
+════════════════════════════════ -->
+<div class="page" id="page-festivais">
+  <div class="festivais-page">
+    <div class="agenda-hd">
+      <div class="sec-pre">Marcas no portal</div>
+      <h2 class="sec-h">Nossos <span class="v">Festivais</span></h2>
+    </div>
+    <div class="fest-grid d-only" id="fest-grid-d"></div>
+    <div class="m-fest-grid m-only" id="fest-grid-m"></div>
+  </div>
+  <div class="footer d-only"><div class="footer-bot" style="justify-content:center"><span style="color:rgba(255,255,255,.3)">© 2025 Trance de Carteirinha</span></div></div>
+</div>
+
+<!-- ════════════════════════════════
+     PAGE: EDITORIAL / BLOG
+════════════════════════════════ -->
+<div class="page" id="page-blog">
+  <div style="background:var(--ink);padding:80px 56px 60px;border-bottom:3px solid var(--v);position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:48px 48px"></div>
+    <div style="position:relative;z-index:1">
+      <div class="ed-ey">Portal Editorial</div>
+      <h1 style="font-family:'Anton',sans-serif;font-size:clamp(48px,6vw,80px);text-transform:uppercase;letter-spacing:-.01em;line-height:.9;color:#0D0D0D;margin-bottom:20px">Da <span style="color:var(--v)">Pista</span><br>Pra Você</h1>
+      <p style="font-size:13px;color:rgba(255,255,255,.4);max-width:480px;line-height:1.8">Cultura, entrevistas, line-ups e tudo que rola na cena eletrônica brasileira.</p>
+    </div>
+  </div>
+  <div style="padding:64px 56px">
+    <div class="filter-bar" style="margin-bottom:40px">
+      <button class="fpill on" onclick="setPill(this)">Todos</button>
+      <button class="fpill" onclick="setPill(this)">Cultura</button>
+      <button class="fpill" onclick="setPill(this)">Eventos</button>
+      <button class="fpill" onclick="setPill(this)">Música</button>
+      <button class="fpill" onclick="setPill(this)">Entrevista</button>
+    </div>
+    <div class="blog-grid d-only" id="blog-full-d"></div>
+    <div class="m-blog-grid m-only" id="blog-full-m"></div>
+  </div>
+  <div class="newsletter d-only">
+    <div>
+      <h2 class="nl-h">Leia antes<br>de todo <span style="color:var(--v)">mundo</span></h2>
+      <p class="nl-sub">Receba os próximos artigos antes de publicar. Line-ups e novidades no seu inbox.</p>
+    </div>
+    <div class="nl-form">
+      <input class="nl-input" type="email" placeholder="seu@email.com">
+      <button class="nl-btn" onclick="showToast('Inscrito! ✓')">Quero Receber →</button>
+      <div class="nl-note">Sem spam. Cancele quando quiser.</div>
+    </div>
+  </div>
+  <div class="footer d-only"><div class="footer-bot" style="justify-content:center"><span style="color:rgba(255,255,255,.3)">© 2025 Trance de Carteirinha</span></div></div>
+</div>
+
+<script>
+/* ══ DATA ══ */
+const EVENTS=[
+  {id:1,brand:'Festival Alpha',genre:'Trance',name:'Festival de Verão',sub:'2025',date:'14 Jun 2025',time:'22h – 08h',local:'São Paulo, SP',venue:'Arena XYZ',price:120,priceFrom:true,color:'#1a0a40',ghost:'TRANCE',
+    desc:'Uma noite inteira de trance progressivo com os melhores artistas nacionais e internacionais. Três palcos, área de descanso e experiência imersiva de som e luz.',
+    lineup:[{name:'Headliner Internacional',role:'Trance Progressivo · Headliner',time:'03h–05h',bg:'#1a0a40',cl:'#AFA9EC'},{name:'B2B Nacional',role:'Techno · B2B',time:'05h–07h',bg:'#0f1e1a',cl:'#5DCAA5'},{name:'Opening Act',role:'Deep Trance · Abertura',time:'22h–00h',bg:'#2a1a0a',cl:'#EF9F27'}],
+    tickets:[{name:'1º Lote',desc:'Vagas limitadas',price:80,badge:'badge-limited',label:'Últimas vagas'},{name:'2º Lote',desc:'Disponível agora',price:120,badge:'badge-avail',label:'Disponível'},{name:'VIP',desc:'Área exclusiva + open bar',price:220,badge:'badge-avail',label:'Disponível'}]},
+  {id:2,brand:'Beta Sounds',genre:'Techno',name:'Noite Techno',sub:'Edição 08',date:'21 Jun 2025',time:'23h – 06h',local:'Rio de Janeiro, RJ',venue:'Galpão Industrial',price:80,priceFrom:false,color:'#0a1a0f',ghost:'TECHNO',
+    desc:'Oitava edição da noite mais pesada do Rio. Apenas techno industrial e minimal. Capacidade limitada para manter a autenticidade.',
+    lineup:[{name:'Residente Principal',role:'Techno Industrial · Residente',time:'02h–04h',bg:'#0f1e1a',cl:'#5DCAA5'},{name:'Convidado Especial',role:'Minimal Techno',time:'04h–06h',bg:'#1a1a1a',cl:'#888780'},{name:'Warm Up',role:'EBM · Abertura',time:'23h–01h',bg:'#1a0a40',cl:'#AFA9EC'}],
+    tickets:[{name:'Antecipado',desc:'Online',price:60,badge:'badge-avail',label:'Disponível'},{name:'Normal',desc:'Na porta',price:80,badge:'badge-avail',label:'Disponível'}]},
+  {id:3,brand:'Club Cosmos',genre:'Psytrance',name:'Psytrance Open Air',sub:'',date:'28 Jun 2025',time:'18h – 08h',local:'Campinas, SP',venue:'Sítio Cósmico',price:150,priceFrom:true,color:'#1a0a1a',ghost:'PSY',
+    desc:'Open air de 14 horas no interior paulista. Full on, progressive e forest. Camping disponível para quem quiser viver a experiência completa.',
+    lineup:[{name:'DJ Internacional PSY',role:'Full On · Headliner',time:'02h–04h',bg:'#1a0f1a',cl:'#ED93B1'},{name:'Forest Crew',role:'Dark Forest · Nacional',time:'04h–06h',bg:'#0f1a14',cl:'#5DCAA5'},{name:'Progressive Set',role:'Progressive Psy',time:'22h–00h',bg:'#1a1510',cl:'#EF9F27'}],
+    tickets:[{name:'1º Lote',desc:'Esgotado',price:100,badge:'badge-sold',label:'Esgotado'},{name:'2º Lote',desc:'Disponível',price:150,badge:'badge-avail',label:'Disponível'},{name:'Camping',desc:'Incluso ingresso',price:200,badge:'badge-avail',label:'Disponível'}]},
+  {id:4,brand:'Deep Roots',genre:'Techno',name:'Underground Club',sub:'Night',date:'05 Jul 2025',time:'00h – 06h',local:'São Paulo, SP',venue:'Bunker SP',price:60,priceFrom:false,color:'#0a0a1a',ghost:'DEEP',
+    desc:'A noite mais underground de São Paulo. Espaço pequeno, som perfeito. Apenas 200 pessoas por edição.',
+    lineup:[{name:'Resident DJ',role:'Techno Minimal',time:'02h–04h',bg:'#1a1826',cl:'#AFA9EC'},{name:'Guest',role:'Industrial · Convidado',time:'04h–06h',bg:'#0a0a1a',cl:'#888780'}],
+    tickets:[{name:'Ingresso Único',desc:'Capacidade limitada 200p.',price:60,badge:'badge-limited',label:'Poucas vagas'}]},
+  {id:5,brand:'Festival Alpha',genre:'Trance',name:'Progressive Night',sub:'Vol. 3',date:'12 Jul 2025',time:'22h – 06h',local:'São Paulo, SP',venue:'D-Edge',price:90,priceFrom:true,color:'#1a0a40',ghost:'PROG',
+    desc:'Terceiro volume da noite de trance progressivo no clube mais icônico de SP.',
+    lineup:[{name:'Headliner Nacional',role:'Trance Progressivo',time:'02h–04h',bg:'#1a0a40',cl:'#AFA9EC'},{name:'B2B',role:'Progressive · B2B',time:'04h–06h',bg:'#0f1e1a',cl:'#5DCAA5'}],
+    tickets:[{name:'Antecipado',desc:'Online — desconto',price:70,badge:'badge-avail',label:'Disponível'},{name:'Normal',desc:'Na bilheteria',price:90,badge:'badge-avail',label:'Disponível'}]},
+  {id:6,brand:'Club Cosmos',genre:'Psytrance',name:'Cosmic Summer',sub:'Festival',date:'19 Jul 2025',time:'14h – 10h',local:'Interior SP',venue:'Fazenda Cosmica',price:200,priceFrom:true,color:'#0a1a0a',ghost:'COSMIC',
+    desc:'Festival de dois dias com camping e open air. A celebração do verão da cena psy paulista.',
+    lineup:[{name:'Headliner 1',role:'Full On Internacional',time:'02h–04h Sáb',bg:'#1a0f1a',cl:'#ED93B1'},{name:'Headliner 2',role:'Forest Nacional',time:'03h–05h Dom',bg:'#0f1a14',cl:'#5DCAA5'}],
+    tickets:[{name:'Dia 1',desc:'Sábado',price:130,badge:'badge-avail',label:'Disponível'},{name:'Dia 2',desc:'Domingo',price:130,badge:'badge-avail',label:'Disponível'},{name:'2 dias',desc:'Pacote completo',price:200,badge:'badge-limited',label:'Últimas vagas'}]},
+];
+
+const ARTISTS=[
+  {name:'DJ Alpha',genre:'Trance Progressivo',events:4,bg:'#1a0a40',cl:'#AFA9EC',initials:'DA'},
+  {name:'Techno Residente',genre:'Techno Industrial',events:6,bg:'#0a0a1a',cl:'#888780',initials:'TR'},
+  {name:'Psy Master',genre:'Full On · Forest',events:3,bg:'#1a0f1a',cl:'#ED93B1',initials:'PM'},
+  {name:'Deep Selector',genre:'Minimal Techno',events:2,bg:'#0f1a14',cl:'#5DCAA5',initials:'DS'},
+  {name:'Progressive B2B',genre:'Trance Progressivo',events:5,bg:'#1a1510',cl:'#EF9F27',initials:'PB'},
+  {name:'Forest Crew',genre:'Dark Forest · Psy',events:4,bg:'#0a1a0a',cl:'#97C459',initials:'FC'},
+  {name:'Industrial Set',genre:'EBM · Techno',events:2,bg:'#1a1a1a',cl:'#888780',initials:'IS'},
+  {name:'Ambient Opener',genre:'Deep Trance · Ambient',events:3,bg:'#0a0a40',cl:'#AFA9EC',initials:'AO'},
+];
+
+const FESTIVALS=[
+  {name:'Festival Alpha',genre:'Trance · Progressive',letter:'A',desc:'O maior festival de trance do estado de SP. Desde 2018, reunindo os melhores artistas nacionais e internacionais.',events:4,edicoes:12},
+  {name:'Beta Sounds',genre:'Techno · Industrial',letter:'B',desc:'Noites de techno pesado no Rio. Capacidade limitada pra manter o ambiente underground.',events:3,edicoes:8},
+  {name:'Club Cosmos',genre:'Psytrance · Forest',letter:'C',desc:'Festivais open air de psy e forest no interior paulista. Camping, natureza e música.',events:6,edicoes:16},
+  {name:'Deep Roots',genre:'Minimal · Underground',letter:'D',desc:'A mais underground das marcas. Bunkers e espaços alternativos. Máximo 200 pessoas.',events:2,edicoes:5},
+];
+
+const POSTS=[
+  {id:1,title:'A Cena Rave Brasileira em 2025',excerpt:'Como os festivais de música eletrônica transformaram a cultura urbana do Brasil e o que esperar da temporada.',tag:'cultura',tagLabel:'Cultura',date:'15 Mai 2025',time:'8 min',bg:'var(--ink2)'},
+  {id:2,title:'Os 10 Sets Mais Impactantes do Ano',excerpt:'Uma seleção dos sets que definiram a pista em 2024 e que ainda ressoam na memória de quem estava lá.',tag:'musica',tagLabel:'Música',date:'10 Mai 2025',time:'6 min',bg:'var(--v4)'},
+  {id:3,title:'Por Que o Psytrance Explodiu no Interior',excerpt:'A expansão da cena psy para além das capitais e como os festivais open air estão mudando o mapa.',tag:'evento',tagLabel:'Evento',date:'5 Mai 2025',time:'5 min',bg:'var(--off)'},
+  {id:4,title:'Entrevista: O Residente do Beta Sounds',excerpt:'Uma conversa franca sobre techno, underground e a cena do Rio que ninguém cobre direito.',tag:'entrevista',tagLabel:'Entrevista',date:'28 Abr 2025',time:'10 min',bg:'var(--g3)'},
+  {id:5,title:'Guia de Festivais Brasileiros — Jun/Jul 2025',excerpt:'Tudo que você precisa saber sobre a temporada que está chegando. Datas, line-ups e como comprar ingresso.',tag:'evento',tagLabel:'Evento',date:'20 Abr 2025',time:'7 min',bg:'var(--v3)'},
+  {id:6,title:'Techno Industrial: A Nova Geração BR',excerpt:'Conheça os artistas brasileiros que estão levando o techno para territórios mais pesados e experimentais.',tag:'musica',tagLabel:'Música',date:'15 Abr 2025',time:'6 min',bg:'var(--ink)'},
+];
+
+/* ══ RENDER FUNCTIONS ══ */
+function eCardHTML(ev){
+  return`<div class="ecard" onclick="openEvent(${ev.id})">
+    <div class="ecard-img" style="background:${ev.color}">
+      <div class="ecard-img-grid"></div>
+      <div class="ecard-img-txt">${ev.brand}</div>
+      <div class="ecard-brand-bar">
+        <span class="ecard-brand">${ev.brand}</span>
+        <span class="ecard-genre">${ev.genre}</span>
+      </div>
+    </div>
+    <div class="ecard-body">
+      <div class="ecard-name">${ev.name} ${ev.sub?'<span style="color:var(--v)">'+ev.sub+'</span>':''}</div>
+      <div class="ecard-meta">
+        <div class="emeta-row"><span class="emeta-ic">📅</span>${ev.date}</div>
+        <div class="emeta-row"><span class="emeta-ic">🕙</span>${ev.time}</div>
+        <div class="emeta-row"><span class="emeta-ic">📍</span>${ev.local}</div>
+      </div>
+      <div class="ecard-footer">
+        <div class="ecard-price">${ev.priceFrom?'<small>A partir de </small>':''}R$${ev.price}</div>
+        <button class="ecard-cta">Ver evento →</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function blogCardHTML(p,dark){
+  const imgStyle=p.bg==='var(--ink)'?`background:var(--ink2)`:`background:${p.bg}`;
+  return`<div class="bcard" onclick="showToast('Artigo em breve!')">
+    <div class="bc-img"><div class="bc-img-inner" style="${imgStyle}">foto · ${p.tagLabel}</div></div>
+    <span class="bc-tag ${p.tag}">${p.tagLabel}</span>
+    <div class="bc-title">${p.title}</div>
+    <p class="bc-excerpt">${p.excerpt}</p>
+    <div class="bc-meta"><span>${p.date}</span><div class="bc-dot"></div><span>${p.time} de leitura</span></div>
+  </div>`;
+}
+
+function artistCardHTML(a){
+  return`<div class="acard" onclick="showToast('Perfil de '+a.name+' em breve!')">
+    <div class="acard-av" style="background:${a.bg};color:${a.cl}">${a.initials}</div>
+    <div class="acard-name">${a.name}</div>
+    <div class="acard-genre">${a.genre}</div>
+    <div class="acard-events">${a.events} eventos em 2025</div>
+  </div>`;
+}
+
+function festCardHTML(f){
+  return`<div class="fcard" onclick="showToast('Página de '+f.name+' em breve!')">
+    <div class="fcard-img"><div class="fcard-img-grid"></div><div class="fcard-letter">${f.letter}</div></div>
+    <div class="fcard-body">
+      <div class="fcard-name">${f.name}</div>
+      <div class="fcard-genre">${f.genre}</div>
+      <p class="fcard-desc">${f.desc}</p>
+      <div class="fcard-stats">
+        <div class="fstat"><div class="n">${f.events}</div><div class="l">Eventos/ano</div></div>
+        <div class="fstat"><div class="n">${f.edicoes}</div><div class="l">Edições</div></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ══ INIT GRIDS ══ */
+function initAll(){
+  const evHomeD=document.getElementById('ev-grid-home');
+  if(evHomeD) evHomeD.innerHTML=EVENTS.slice(0,3).map(eCardHTML).join('');
+
+  const evHomeM=document.getElementById('ev-grid-home-m');
+  if(evHomeM) evHomeM.innerHTML=EVENTS.slice(0,3).map(eCardHTML).join('');
+
+  const evAgenda=document.getElementById('ev-grid-agenda');
+  if(evAgenda) evAgenda.innerHTML=EVENTS.map(eCardHTML).join('');
+
+  const blogHome=document.getElementById('blog-home');
+  if(blogHome) blogHome.innerHTML=POSTS.slice(0,3).map(p=>blogCardHTML(p)).join('');
+
+  const blogHomeM=document.getElementById('blog-home-m');
+  if(blogHomeM) blogHomeM.innerHTML=POSTS.slice(0,2).map(p=>blogCardHTML(p)).join('');
+
+  const blogFD=document.getElementById('blog-full-d');
+  if(blogFD) blogFD.innerHTML=POSTS.map(p=>blogCardHTML(p)).join('');
+
+  const blogFM=document.getElementById('blog-full-m');
+  if(blogFM) blogFM.innerHTML=POSTS.map(p=>blogCardHTML(p)).join('');
+
+  const artD=document.getElementById('artists-grid-d');
+  if(artD) artD.innerHTML=ARTISTS.map(artistCardHTML).join('');
+
+  const artM=document.getElementById('artists-grid-m');
+  if(artM) artM.innerHTML=ARTISTS.map(artistCardHTML).join('');
+
+  const festD=document.getElementById('fest-grid-d');
+  if(festD) festD.innerHTML=FESTIVALS.map(festCardHTML).join('');
+
+  const festM=document.getElementById('fest-grid-m');
+  if(festM) festM.innerHTML=FESTIVALS.map(festCardHTML).join('');
+}
+
+/* ══ OPEN EVENT ══ */
+function openEvent(id){
+  const ev=EVENTS.find(e=>e.id===id);
+  if(!ev) return;
+
+  // Desktop
+  document.getElementById('evd-brand').textContent=ev.brand;
+  document.getElementById('evd-title').innerHTML=ev.name+'<br><span style="color:var(--v)">'+ev.sub+'</span>';
+  document.getElementById('evd-ghost').textContent=ev.genre.split(' ')[0].toUpperCase();
+  document.getElementById('evd-date').textContent=ev.date;
+  document.getElementById('evd-time').textContent=ev.time;
+  document.getElementById('evd-local').textContent=ev.venue+' — '+ev.local;
+  document.getElementById('evd-desc').textContent=ev.desc;
+
+  document.getElementById('evd-lineup').innerHTML=ev.lineup.map(a=>`
+    <div class="artist-row">
+      <div class="artist-av" style="background:${a.bg};color:${a.cl}">${a.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+      <div class="artist-info"><div class="artist-name">${a.name}</div><div class="artist-role">${a.role}</div></div>
+      <div class="artist-time">${a.time}</div>
+    </div>`).join('');
+
+  document.getElementById('evd-tickets').innerHTML=ev.tickets.map(t=>`
+    <div class="ticket-card">
+      <div class="ticket-card-hd">
+        <span class="ticket-card-name">${t.name}</span>
+        <span class="ticket-card-badge ${t.badge}">${t.label}</span>
+      </div>
+      <div class="ticket-card-body">
+        <span class="ticket-desc">${t.desc}</span>
+        <span class="ticket-price-big"><small>R$</small>${t.price}</span>
+      </div>
+    </div>`).join('');
+
+  // Mobile
+  document.getElementById('m-evd-brand').textContent=ev.brand;
+  document.getElementById('m-evd-title').innerHTML=ev.name+(ev.sub?' <span style="color:var(--v)">'+ev.sub+'</span>':'');
+  document.getElementById('m-evd-desc').textContent=ev.desc;
+  document.getElementById('m-evd-metas').innerHTML=[
+    '📅 '+ev.date,
+    '🕙 '+ev.time,
+    '📍 '+ev.venue+' — '+ev.local
+  ].map(m=>`<div style="font-size:11px;color:var(--body);letter-spacing:.03em">${m}</div>`).join('');
+
+  document.getElementById('m-evd-lineup').innerHTML=ev.lineup.map(a=>`
+    <div class="artist-row" style="padding:10px 0;border-bottom:1px solid var(--line)">
+      <div class="artist-av" style="background:${a.bg};color:${a.cl};width:36px;height:36px;font-size:11px">${a.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+      <div class="artist-info"><div class="artist-name" style="font-size:12px;color:var(--ink)">${a.name}</div><div class="artist-role" style="color:var(--muted)">${a.role}</div></div>
+      <div style="font-size:11px;color:var(--v)">${a.time}</div>
+    </div>`).join('');
+
+  document.getElementById('m-evd-tickets').innerHTML=ev.tickets.map(t=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)">
+      <div><div style="font-size:12px;font-weight:500;color:var(--ink)">${t.name}</div><div style="font-size:10px;color:var(--muted)">${t.desc}</div></div>
+      <div style="font-family:'Anton',sans-serif;font-size:22px;color:var(--ink)">R$${t.price}</div>
+    </div>`).join('');
+
+  goPage('evento');
+}
+
+/* ══ NAVIGATION ══ */
+function goPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg=document.getElementById('page-'+name);
+  if(!pg) return;
+  pg.classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('on'));
+  const nl=document.getElementById('nl-'+name);
+  if(nl) nl.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function setPill(el){
+  el.closest('.filter-bar').querySelectorAll('.fpill').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function openMenu(){
+  document.getElementById('menu-overlay').classList.add('open');
+  document.getElementById('menu-drawer').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeMenu(){
+  document.getElementById('menu-overlay').classList.remove('open');
+  document.getElementById('menu-drawer').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+/* ══ BOOT ══ */
+initAll();
+</script>
+</body>
+</html>
